@@ -1,13 +1,6 @@
 # Representation-of-a-Real-World-Problem-as-a-Markov-Decision-Process
-
-
 ## Aim
-
-Write your aim here.
-
-Example:
-
-> To identify a real-world sequential decision-making problem and represent it formally as a Markov Decision Process by defining its states, actions, rewards, transitions, and Python representation.
+To model an Inventory Management System using a Markov Decision Process (MDP) by defining its states, actions, transition probabilities, rewards, and Python representation.
 
 ---
 
@@ -15,10 +8,7 @@ Example:
 
 ### Problem Description
 
-Write your answer here.
-
-Describe the real-world application that you selected.
-
+An inventory management system monitors stock levels and decides when and how much stock to order. The objective is to maintain sufficient stock, avoid shortages, and reduce excess inventory and ordering costs.
 
 ---
 
@@ -44,49 +34,34 @@ Where:
 
 ## State Space
 
-Write your answer here.
+The state space lists all possible inventory conditions.
 
-The state space should list all possible situations in which the agent can exist.
-
-Example format:
-
-```text
+```
 S = {
-    State 1,
-    State 2,
-    State 3,
-    ...
+    Low_Stock,
+    Medium_Stock,
+    High_Stock,
+    Out_Of_Stock
 }
 ```
-
-
-
 ---
 
 ## Sample State
-
-Write your answer here.
-
 A sample state is one specific example from the state space.
-
-
-
+```
+Low_Stock
+```
 ---
 
 ## Action Space
 
-Write your answer here.
-
-The action space should list all possible actions available to the agent.
-
-Example format:
-
-```text
+The action space lists all possible actions available to the agent.
+```
 A = {
-    Action 1,
-    Action 2,
-    Action 3,
-    ...
+    No_Order,
+    Small_Order,
+    Large_Order,
+    Emergency_Order
 }
 ```
 
@@ -94,20 +69,15 @@ A = {
 ---
 
 ## Sample Action
-
-Write your answer here.
-
 A sample action is one action selected from the action space.
-
-
-
+```
+Small_Order
+```
 ---
 
 ## Transition Probability
 
-Write your answer here.
-
-The transition probability explains how the environment moves from one state to another after an action is taken.
+Transition probability explains how the stock level changes after an action is taken.
 
 General form:
 
@@ -115,16 +85,23 @@ $$
 P(s' \mid s,a)
 $$
 
-This means:
+```
+From Low_Stock, after Small_Order:
+Medium_Stock = 0.80
+Low_Stock = 0.20
 
-> Probability of reaching next state $s'$ after taking action $a$ in current state $s$.
+From Medium_Stock, after No_Order:
+Low_Stock = 0.60
+Medium_Stock = 0.40
 
+From Out_Of_Stock, after Emergency_Order:
+High_Stock = 0.60
+Medium_Stock = 0.40
+```
 
 ---
 
 ## Reward Function
-
-Write your answer here.
 
 The reward function defines the feedback received by the agent after taking an action.
 
@@ -134,52 +111,104 @@ $$
 R(s,a,s')
 $$
 
+```
+Situation	                                Reward
 
-
+Stock maintained at a suitable level            +50
+Ordering cost reduced                           +15
+Desired stock level reached	                  +25
+Excess inventory	                          -20
+Stock shortage                       	        -40
+```
 ---
+## Discount Factor
+
+γ = 0.90
 
 ## Graphical Representation
 
-Write your answer here.
-
-Draw the MDP graph.
-
-The graph should include:
-
-1. States as nodes.
-2. Actions as arrows.
-3. Rewards on transitions.
-4. Transition probabilities if applicable.
-
+<img width="1536" height="1024" alt="Inventory Management MDP Diagram" src="https://github.com/user-attachments/assets/a21fe0ae-4649-4faa-89c0-e11965ab3b17" />
 
 ---
 
 ## Python Representation
 
-Write your code here.
+### MDP Representation using Python
+### Name : IRSHATH AHAMED
+### Register Number : 212224110025
 
-Use Python dictionaries to represent the MDP.
+```
 
+from pprint import pprint
 
-```python
-# MDP Representation using Python
-# print("Name:       ")
-# print("Register Number:     ")
+# State mapping
+states = {
+    0: "Low_Stock",
+    1: "Medium_Stock",
+    2: "High_Stock",
+    3: "Out_Of_Stock"
+}
+
+# Action mapping
+actions = {
+    0: "No_Order",
+    1: "Small_Order",
+    2: "Large_Order",
+    3: "Emergency_Order"
+}
+
+# MDP Transition Representation
+P = {
+    0: {
+        0: [(0.3, 0, 0, False), (0.7, 3, 0, False)],
+        1: [(0.8, 1, 25, False), (0.2, 0, 0, False)],
+        2: [(0.4, 1, 0, False), (0.6, 2, 0, False)],
+        3: [(0.8, 2, 0, False), (0.2, 1, 0, False)]
+    },
+
+    1: {
+        0: [(0.6, 0, -40, False), (0.4, 1, 0, False)],
+        1: [(0.4, 1, 0, False), (0.6, 2, 25, False)],
+        2: [(0.2, 1, 0, False), (0.8, 2, 0, False)],
+        3: [(0.1, 1, 0, False), (0.9, 2, 0, False)]
+    },
+
+    2: {
+        0: [(0.7, 1, 0, False), (0.3, 2, 15, False)],
+        1: [(0.3, 1, 0, False), (0.7, 2, 0, False)],
+        2: [(0.1, 1, 0, False), (0.9, 2, -20, False)],
+        3: [(0.05, 1, 0, False), (0.95, 2, 0, False)]
+    },
+
+    3: {
+        0: [(1.0, 3, 0, False)],
+        1: [(0.8, 0, 0, False), (0.2, 3, 0, False)],
+        2: [(0.7, 1, 0, False), (0.3, 0, 0, False)],
+        3: [(0.4, 1, 0, False), (0.6, 2, 50, False)]
+    }
+}
+
+print("MDP Representation")
+print("\nStates:")
+print(states)
+
+print("\nActions:")
+print(actions)
+
+print("\nTransition Probability P:")
+pprint(P, sort_dicts=False, width=80)
 
 ```
 ---
 ## Output
+<img width="677" height="461" alt="image" src="https://github.com/user-attachments/assets/1a51f996-a8ea-44e5-8719-7e445b265922" />
 
-Write your Python output here.
 
 
 ---
 
 ## Result
-
-Write your result here.
-
-
+The Inventory Management System was successfully represented as a Markov Decision Process by defining its states, actions, transition probabilities, reward function, and discount factor.
 
 ---
 
