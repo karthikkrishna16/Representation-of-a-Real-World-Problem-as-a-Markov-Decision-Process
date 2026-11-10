@@ -134,8 +134,8 @@ Stock shortage                       	        -40
 ## Python Representation
 
 ### MDP Representation using Python
-### Name : IRSHATH AHAMED
-### Register Number : 212224110025
+### Name : TH KARTHIK KRISHNA
+### Register Number : 212223240067
 
 ```
 
